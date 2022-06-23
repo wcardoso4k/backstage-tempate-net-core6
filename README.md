@@ -1,0 +1,1 @@
+# backstage-tempate-net-core6
