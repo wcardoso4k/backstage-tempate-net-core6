@@ -1,1 +1,82 @@
 
+apiVersion: backstage.io/v1beta2
+kind: Template
+metadata:
+  name: aspnet-core-webapi
+  # This is an extra long description
+  description: Use este modelo para criar um novo porjeto de WEB API usando o ASP.NET CORE 6.0
+  tags: [dotnet, webapi, dotnetcore, aspnetcore, c#]
+  links:
+    - url: https://github.com/wcardoso4k/backstage-tempate-net-core6
+      title: GitHub Repo
+      icon: github
+spec:
+  owner: wcardoso4k/backstage
+  type: service
+  parameters:
+     - title: Configuração do projeto
+       required: [name, title, description, namespace]
+       proprieties:
+          name:
+             title: Nome
+             type: string
+             description: Nome do seu projeto. Use Apenas letra, números, ponto e hifens.
+             ui:autofocus: true
+          title:
+             title: Titulo
+             type: string
+             description: Nome amigavél do seu projeto, que será exbibido no REDME e no catálogo de componentes.
+          description:
+             title: Descrição
+             type: string
+             description: Breve descrição do seu projeto.
+             ui:options:
+               rows: 5
+          namespace:
+             title: Namespace-raiz
+             type: string
+             description: O namespace-raiz do projeto. Utilize apenas letras e pontos.
+          owner:
+             title: Proprietário(s)
+             type: string
+             description: Equipe responsável pelo projeto
+          owner:
+             title: Proprietário(s)
+             type: string
+             description: Equipe responsável pelo projeto
+             ui:field: OwnePickers
+             ui:options:
+               allowKinds: [Users, Groups]
+     - title: Configuração do repositório
+  steps:
+    - id: template
+      name: Fetch Skeleton + Template
+      action: fetch: cookiecutter
+      input: 
+        url: ./template
+        copyWithoutRender:
+          - .github/workflows/*
+        values:
+          name: '{{ parameters.name }}'
+          title: '{{ parameters.title }}'
+          description : '{{ parameters.description }}'
+          namespace: '{{ parameters.namespace }}'
+          destination : '{{ parameters.destination }}'
+          owner : '{{ parameters.owner }}'
+         
+     - id: publish
+        name: Publish
+        action: publish:github
+        input: 
+          allowedHosts: ['github.com']
+            description : '{{ parameters.title }}'
+            repoURL : '{{ parameters.repoURL }}'
+            
+      - id: register
+          name: Register
+          action: catalog:register
+          input: 
+            allowedHosts: ['github.com']
+              description : '{{ parameters.title }}'
+              repoURL : '{{ parameters.repoURL }}'
+   
