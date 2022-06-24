@@ -61,7 +61,7 @@ spec:
           title: '{{ parameters.title }}'
           description : '{{ parameters.description }}'
           namespace: '{{ parameters.namespace }}'
-          destination : '{{ parameters.destination }}'
+          destination : '{{ parameters.parseRepoUrl parameters.repoUrl }}'
           owner : '{{ parameters.owner }}'
          
      - id: publish
@@ -76,7 +76,9 @@ spec:
           name: Register
           action: catalog:register
           input: 
-            allowedHosts: ['github.com']
-              description : '{{ parameters.title }}'
-              repoURL : '{{ parameters.repoURL }}'
-   
+            repoContentUrl: '{{ steps.publish.output.repoContentUrl }}'
+            catalogInfoPath: '/catalog-info.yml'
+            
+    output:
+      remoteUrl: '{{ steps.publish.output.remoteUrl }}'
+      entityRef: '{{ steps.register.output.entityRef }}'
