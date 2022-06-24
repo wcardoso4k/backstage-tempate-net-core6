@@ -40,10 +40,6 @@ spec:
              title: Proprietário(s)
              type: string
              description: Equipe responsável pelo projeto
-          owner:
-             title: Proprietário(s)
-             type: string
-             description: Equipe responsável pelo projeto
              ui:field: OwnePickers
              ui:options:
                allowKinds: [Users, Groups]
@@ -51,7 +47,7 @@ spec:
   steps:
     - id: template
       name: Fetch Skeleton + Template
-      action: fetch: cookiecutter
+      action: fetch:cookiecutter
       input: 
         url: ./template
         copyWithoutRender:
@@ -64,21 +60,21 @@ spec:
           destination : '{{ parameters.parseRepoUrl parameters.repoUrl }}'
           owner : '{{ parameters.owner }}'
          
-     - id: publish
-        name: Publish
-        action: publish:github
-        input: 
-          allowedHosts: ['github.com']
-            description : '{{ parameters.title }}'
-            repoURL : '{{ parameters.repoURL }}'
+    - id: publish
+      name: Publish
+      action: publish:github
+      input: 
+        allowedHosts: ['github.com']
+        description : '{{ parameters.title }}'
+        repoURL : '{{ parameters.repoURL }}'
+        
+    - id: register
+      name: Register
+      action: catalog:register
+      input: 
+        repoContentUrl: '{{ steps.publish.output.repoContentUrl }}'
+        catalogInfoPath: '/catalog-info.yml'
             
-      - id: register
-          name: Register
-          action: catalog:register
-          input: 
-            repoContentUrl: '{{ steps.publish.output.repoContentUrl }}'
-            catalogInfoPath: '/catalog-info.yml'
-            
-    output:
-      remoteUrl: '{{ steps.publish.output.remoteUrl }}'
-      entityRef: '{{ steps.register.output.entityRef }}'
+output:
+  remoteUrl: '{{ steps.publish.output.remoteUrl }}'
+  entityRef: '{{ steps.register.output.entityRef }}'
